@@ -15,7 +15,10 @@ export default new dynamoose.Schema(
       required: true,
       type: String,
     },
-    phone: String,
+    phone: {
+      type: String,
+      required: false,
+    },
   },
   {
     timestamps: true,

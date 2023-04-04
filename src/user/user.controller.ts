@@ -3,7 +3,7 @@ import User from '../models/user/user.model';
 import * as uuid from 'uuid';
 
 async function find(req: Request, res: Response) {
-  const users = await User.query().all().exec();
+  const users = await User.scan().exec();
   res.json({
     items: users,
     total: users.length,
@@ -13,6 +13,7 @@ async function find(req: Request, res: Response) {
 async function findById(req: Request, res: Response) {
   const id = req.params.id;
   const user = await User.get(id);
+  if (!user) throw new Error('Not found user');
   res.json({
     item: user,
   });

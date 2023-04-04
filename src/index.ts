@@ -5,21 +5,9 @@ import userController from './user/user.controller';
 
 const app = express();
 
-function configDb() {
-  const { REGION, ACCESS_KEY_ID, SECRET_ACCESS_KEY } = process.env as Record<string, string>;
+const ddb = new dynamoose.aws.ddb.DynamoDB({});
+dynamoose.aws.ddb.set(ddb);
 
-  const ddb = new dynamoose.aws.ddb.DynamoDB({
-    region: REGION,
-    credentials: {
-      accessKeyId: ACCESS_KEY_ID,
-      secretAccessKey: SECRET_ACCESS_KEY,
-    },
-  });
-
-  dynamoose.aws.ddb.set(ddb);
-}
-
-configDb();
 app.use(express.json());
 
 app.post('/users', userController.create);
@@ -31,6 +19,14 @@ app.delete('/users/:id', userController.remove);
 app.use((req, res, next) => {
   return res.status(404).json({
     error: 'Not Found',
+  });
+});
+
+app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
+  console.error(err.stack);
+  res.status(500).json({
+    error: err.message,
+    stack: err.stack,
   });
 });
 

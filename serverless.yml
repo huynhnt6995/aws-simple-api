@@ -1,44 +1,25 @@
-service: aws-simple-api
 frameworkVersion: '3'
+service: aws-simple-api
+
+plugins:
+  - serverless-webpack
 
 custom:
-  tableName: 'users-table-${sls:stage}'
+  stage: ${opt:stage}
 
 provider:
   name: aws
-  runtime: nodejs18.x
-  iam:
-    role:
-      statements:
-        - Effect: Allow
-          Action:
-            - dynamodb:Query
-            - dynamodb:Scan
-            - dynamodb:GetItem
-            - dynamodb:PutItem
-            - dynamodb:UpdateItem
-            - dynamodb:DeleteItem
-          Resource:
-            - Fn::GetAtt: [ UsersTable, Arn ]
-  environment:
-    USERS_TABLE: ${self:custom.tableName}
+  runtime: nodejs16.x
 
 functions:
   api:
-    handler: index.handler
+    handler: functions/api.handler
+    role: ApiRole
+    environment:
+      TABLE_USERS: ${self:custom.stage}-Users
     events:
       - httpApi: '*'
 
 resources:
-  Resources:
-    UsersTable:
-      Type: AWS::DynamoDB::Table
-      Properties:
-        AttributeDefinitions:
-          - AttributeName: userId
-            AttributeType: S
-        KeySchema:
-          - AttributeName: userId
-            KeyType: HASH
-        BillingMode: PAY_PER_REQUEST
-        TableName: ${self:custom.tableName}
+  - ${file(resources/iam.yml)}
+  - ${file(resources/dynamodb.yml)}

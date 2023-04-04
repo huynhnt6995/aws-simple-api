@@ -1,18 +1,37 @@
 {
   "name": "aws-simple-api",
   "version": "1.0.0",
-  "description": "",
+  "description": "Simple aws api express",
+  "keywords": [
+    "aws",
+    "express",
+    "nodejs",
+    "lambda",
+    "simple",
+    "serverless"
+  ],
   "dependencies": {
     "@aws-sdk/lib-dynamodb": "^3.303.0",
     "dynamoose": "^3.1.0",
     "express": "^4.18.2",
-    "serverless-http": "^3.1.1",
+    "serverless-http": "^3.2.0",
     "uuid": "^9.0.0"
   },
   "devDependencies": {
     "@types/express": "^4.17.17",
     "@types/uuid": "^9.0.1",
+    "serverless-webpack": "^5.11.0",
+    "ts-loader": "^9.4.2",
     "typescript": "^5.0.3"
   },
-  "build": "tsc"
+  "build": "tsc",
+  "engines": {
+    "node": "16.x"
+  },
+  "scripts": {
+    "deploy": "serverless deploy --stage dev3 --aws-profile huynhnt",
+    "log": "serverless logs -f api --stage dev3 -t --aws-profile huynhnt",
+    "log-group": "awslogs groups --aws-profile huynhnt"
+  },
+  "license": "HuynhNT"
 }
